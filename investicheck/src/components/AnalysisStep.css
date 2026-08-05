@@ -1,0 +1,75 @@
+.analysis-step {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 0;
+}
+
+.analysis-step + .analysis-step {
+  border-top: 1px solid var(--border);
+}
+
+.analysis-step__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.analysis-step__label {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+/* ---------- Done ---------- */
+.analysis-step--done .analysis-step__icon {
+  background-color: #dcfce7;
+  color: var(--green);
+}
+
+.analysis-step--done .analysis-step__label {
+  color: var(--navy);
+}
+
+/* ---------- Active ---------- */
+.analysis-step--active .analysis-step__icon {
+  background-color: #eef2ff;
+  color: var(--navy);
+}
+
+.analysis-step--active .analysis-step__label {
+  color: var(--navy);
+  font-weight: 700;
+}
+
+.analysis-step__spinner {
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Pending ---------- */
+.analysis-step--pending .analysis-step__icon {
+  background-color: #f1f5f9;
+  color: var(--text-muted);
+}
+
+.analysis-step--pending .analysis-step__label {
+  color: var(--text-muted);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .analysis-step__spinner {
+    animation: none;
+  }
+}

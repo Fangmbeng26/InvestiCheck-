@@ -1,0 +1,97 @@
+/* Shared by FormInput, FormSelect, FormTextArea, FormCheckbox.
+   Keeping one stylesheet for all of them means every field across every
+   form in the app looks and behaves identically. */
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 22px;
+}
+
+.form-field label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.form-field__optional {
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--navy);
+  background-color: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  width: 100%;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-field textarea {
+  resize: vertical;
+  min-height: 110px;
+  line-height: 1.5;
+}
+
+.form-field input::placeholder,
+.form-field textarea::placeholder {
+  color: var(--text-muted);
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  outline: none;
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
+}
+
+.form-field input[aria-invalid='true'],
+.form-field select[aria-invalid='true'],
+.form-field textarea[aria-invalid='true'] {
+  border-color: var(--red);
+}
+
+.form-field input[aria-invalid='true']:focus,
+.form-field textarea[aria-invalid='true']:focus {
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12);
+}
+
+.form-field__error {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--red);
+}
+
+/* ---------- Checkbox variant ---------- */
+.form-field--checkbox {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.form-field--checkbox input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  accent-color: var(--navy);
+  flex-shrink: 0;
+}
+
+.form-field--checkbox label {
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 500px) {
+  .form-field {
+    margin-bottom: 18px;
+  }
+}

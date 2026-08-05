@@ -1,0 +1,166 @@
+.about-page {
+  padding: 64px 0 96px;
+}
+
+/* ---------- Mission / Vision ---------- */
+.about-page__mission-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-bottom: 72px;
+}
+
+.about-card {
+  background-color: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 32px;
+}
+
+.about-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-sm);
+  background-color: #eef2ff;
+  color: var(--navy);
+  margin-bottom: 18px;
+}
+
+.about-card h3 {
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 10px;
+}
+
+.about-card p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+/* Shared section spacing  */
+.about-section {
+  margin-bottom: 72px;
+}
+
+/*  Why InvestiCheck: warning list ---------- */
+.about-warnings {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+.about-warnings__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.about-warnings__item svg {
+  color: var(--orange);
+  flex-shrink: 0;
+}
+
+/* ---------- How it works: numbered steps ---------- */
+.about-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.about-step-card {
+  background-color: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 24px 20px;
+}
+
+.about-step-card__number {
+  display: block;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+}
+
+.about-step-card h4 {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+
+.about-step-card p {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+/* ---------- CTA ---------- */
+.about-cta {
+  text-align: center;
+  background-color: var(--navy);
+  border-radius: var(--radius-lg);
+  padding: 56px 32px;
+}
+
+.about-cta h2 {
+  font-size: clamp(24px, 3.4vw, 30px);
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 10px;
+}
+
+.about-cta p {
+  font-size: 16px;
+  color: #cbd5e1;
+  margin-bottom: 26px;
+}
+
+.about-cta .btn-primary {
+  background-color: var(--white);
+  color: var(--navy);
+}
+
+.about-cta .btn-primary:hover {
+  background-color: #e2e8f0;
+}
+
+/* ---------- Tablet ---------- */
+@media (max-width: 860px) {
+  .about-page__mission-grid,
+  .about-warnings {
+    grid-template-columns: 1fr;
+  }
+
+  .about-steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 500px) {
+  .about-page {
+    padding: 48px 0 72px;
+  }
+
+  .about-steps {
+    grid-template-columns: 1fr;
+  }
+
+  .about-cta {
+    padding: 40px 22px;
+  }
+}

@@ -1,0 +1,71 @@
+.analysis-page {
+  padding: 72px 0 100px;
+  min-height: calc(100vh - 72px - 260px);
+}
+
+.analysis-page__inner {
+  max-width: 560px;
+  text-align: center;
+}
+
+.analysis-page__header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.analysis-page__badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 999px;
+  background-color: #fffbeb;
+  color: var(--orange);
+  margin-bottom: 20px;
+}
+
+.analysis-page__title {
+  font-size: clamp(24px, 3.6vw, 32px);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--navy);
+  margin-bottom: 8px;
+}
+
+.analysis-page__platform {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin-bottom: 14px;
+}
+
+.analysis-page__description {
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  max-width: 420px;
+}
+
+.analysis-card {
+  background-color: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 28px 32px;
+  text-align: left;
+}
+
+@media (max-width: 720px) {
+  .analysis-page {
+    padding: 56px 0 80px;
+  }
+}
+
+@media (max-width: 500px) {
+  .analysis-card {
+    padding: 20px 22px;
+  }
+}

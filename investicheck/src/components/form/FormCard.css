@@ -1,0 +1,20 @@
+.form-card {
+  background-color: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 36px;
+}
+
+@media (max-width: 720px) {
+  .form-card {
+    padding: 28px 24px;
+  }
+}
+
+@media (max-width: 500px) {
+  .form-card {
+    padding: 22px 18px;
+    border-radius: var(--radius-md);
+  }
+}

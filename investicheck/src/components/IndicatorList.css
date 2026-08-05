@@ -1,0 +1,24 @@
+.indicator-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.indicator-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.indicator-list--negative svg {
+  color: var(--orange);
+  flex-shrink: 0;
+}
+
+.indicator-list--positive svg {
+  color: var(--green);
+  flex-shrink: 0;
+}
