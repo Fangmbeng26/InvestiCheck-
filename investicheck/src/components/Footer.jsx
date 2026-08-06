@@ -16,10 +16,10 @@ function Footer() {
         </div>
 
         <nav className="footer__links" aria-label="Footer">
-          <a href="#how-it-works">How It Works</a>
-          <a href="#about">About</a>
-          <a href="#contact">Contact</a>
-          <a href="#privacy">Privacy</a>
+          <Link to="/how-it-works">How It Works</Link>
+          <Link to="/about">About</Link>
+          <Link to="/contact">Contact</Link>
+          <Link to="/privacy">Privacy</Link>
         </nav>
       </div>
 

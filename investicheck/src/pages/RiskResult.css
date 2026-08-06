@@ -52,7 +52,7 @@
 }
 
 .result-summary--low .result-summary__score-number { color: var(--green); }
-.result-summary--moderate .result-summary__score-number { color: var(--orange); }
+.result-summary--medium .result-summary__score-number { color: var(--orange); }
 .result-summary--high .result-summary__score-number { color: var(--red); }
 
 .result-summary__score-max {
@@ -75,13 +75,13 @@
 }
 
 .result-summary__bar-fill--low { background-color: var(--green); }
-.result-summary__bar-fill--moderate { background-color: var(--orange); }
+.result-summary__bar-fill--medium { background-color: var(--orange); }
 .result-summary__bar-fill--high { background-color: var(--red); }
 
 /* ---------- Indicator blocks ---------- */
 .result-dashboard__grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
   margin-bottom: 32px;
 }

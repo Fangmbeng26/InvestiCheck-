@@ -58,6 +58,39 @@
   text-align: left;
 }
 
+.analysis-card--error {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 32px;
+}
+
+.analysis-card--error svg {
+  color: var(--red);
+  margin-bottom: 14px;
+}
+
+.analysis-error__message {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+
+.analysis-error__hint {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  margin-bottom: 22px;
+}
+
+.analysis-error__actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 @media (max-width: 720px) {
   .analysis-page {
     padding: 56px 0 80px;

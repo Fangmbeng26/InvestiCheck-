@@ -10,18 +10,15 @@ import './RiskResult.css'
 
 function RiskResult() {
   const location = useLocation()
-  const formData = location.state
 
-  // useMemo re-runs analyzeInvestment only when formData changes, instead
-  // of recalculating the score on every re-render. Cheap here either way,
-  // but it's the correct pattern once a calculation isn't free.
-  const result = useMemo(() => (formData ? analyzeInvestment(formData) : null), [formData])
+  const { formData, result } = location.state || {}
+
 
   if (!formData || !result) {
     return <Navigate to="/check-investment" replace />
   }
 
-  const { score, level, levelLabel, negativeIndicators, positiveIndicators } = result
+  const { score, level, levelLabel, negativeIndicators, positiveIndicators, insufficientDataNotes } = result
 
   return (
     <>
@@ -60,10 +57,16 @@ function RiskResult() {
                 <IndicatorList items={positiveIndicators} variant="positive" />
               </section>
             )}
+            {insufficientDataNotes.length > 0 && (
+              <section className="result-block">
+                <h2>Insufficient Data Notes</h2>
+                <IndicatorList items={insufficientDataNotes} variant="neutral" />
+              </section>
+            )}
           </div>
 
           <div className="result-dashboard__actions">
-            <PrimaryButton to="/report" state={formData}>
+            <PrimaryButton to="/report" state={{ formData, result }}>
               View Detailed Report →
             </PrimaryButton>
             <SecondaryButton to="/check-investment">Analyze Another Platform</SecondaryButton>

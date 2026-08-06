@@ -52,7 +52,7 @@
   display: none;
   background: none;
   border: none;
-  color: var(--white);
+  color: var(--navy);
   padding: 4px;
 }
 
@@ -82,7 +82,7 @@
     padding: 12px 0;
     font-size: 15px;
     font-weight: 500;
-    color: var(--white);
+    color: var(--navy);
   }
 
   .navbar__mobile-menu .btn-primary {

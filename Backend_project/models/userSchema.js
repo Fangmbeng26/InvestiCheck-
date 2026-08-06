@@ -17,6 +17,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
    },
+   country:{
+    type: String,
+   },
+   role:{
+    type: String,
+    enum: ["user", "admin"],
+    default: "user"
+   },
    timestamp:{
     type: Date,
     default: Date.now

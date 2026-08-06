@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import RiskPreviewCard from './RiskPreviewCard.jsx'
 import './Hero.css'
 
@@ -12,12 +13,12 @@ function Hero() {
             informed decisions before committing your money.
           </p>
           <div className="hero__actions">
-            <a href="/check-investment" className="btn-primary">
+            <Link to="/check-investment" className="btn-primary">
               Check an Investment →
-            </a>
-            <a href="how-it-works" className="link-secondary">
+            </Link>
+            <Link to="/how-it-works" className="link-secondary">
               How It Works
-            </a>
+            </Link>
           </div>
         </div>
 

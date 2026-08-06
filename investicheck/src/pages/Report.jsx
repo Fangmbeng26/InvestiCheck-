@@ -12,7 +12,7 @@ import { analyzeInvestment } from '../utils/riskAnalysis.js'
 import './Report.css'
 
 // A short, level-specific paragraph. This is static copy, not generated
-// text — just three pre-written summaries picked based on the risk level.
+// text — just three pre-written summaries 
 const summaryCopy = {
   low: 'This platform shows relatively few common warning signs based on the information provided. That does not guarantee it is legitimate — independent research is still recommended.',
   moderate: 'This platform shows a mix of warning signs and positive signals. Extra caution and independent verification are recommended before investing.',

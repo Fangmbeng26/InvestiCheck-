@@ -69,7 +69,7 @@ function CheckInvestment() {
 
     if (!validate()) return
 
-    // No backend yet: the form data travels to the next page via router state.
+    // No backend yet: the form data travels to the next page via router state
     navigate('/analysis', { state: formData })
   }
 

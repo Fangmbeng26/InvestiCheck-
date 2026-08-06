@@ -40,13 +40,21 @@ function Navbar() {
     
       {isMenuOpen && (
         <nav className="navbar__mobile-menu" aria-label="Mobile">
-          <a href="how-it-works" onClick={closeMenu}>How It Works</a>
-          <a href="about" onClick={closeMenu}>About</a>
-          <a href="login" onClick={closeMenu}>Login</a>
-          <a href="signup" onClick={closeMenu}>SignUp</a>
-          <a href="get-started" className="btn-primary" onClick={closeMenu}>
+          <Link to="/how-it-works" onClick={closeMenu}>
+            How It Works
+          </Link>
+          <Link to="/about" onClick={closeMenu}>
+            About
+          </Link>
+          <Link to="/login" onClick={closeMenu}>
+            Login
+          </Link>
+          <Link to="/signup" onClick={closeMenu}>
+            SignUp
+          </Link>
+          <Link to="/get-started" className="btn-primary" onClick={closeMenu}>
             Get Started
-          </a>
+          </Link>
         </nav>
       )}
     </header>

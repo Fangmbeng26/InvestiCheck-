@@ -22,3 +22,8 @@
   color: var(--green);
   flex-shrink: 0;
 }
+
+.indicator-list--neutral svg {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
