@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom'
 import { ShieldCheck } from 'lucide-react'
 import './Footer.css'
 
