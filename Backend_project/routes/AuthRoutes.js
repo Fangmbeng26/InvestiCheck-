@@ -1,11 +1,17 @@
 import express from "express";
-import { signup, login } from '../controllers/AuthController.js';
-import {analyzeRisk} from '../controllers/RiskAnalysisController.js';
+import { signup, login, me } from "../controllers/AuthController.js";
+import validate from "../middleware/validate.js";
+import { requireAuth } from "../middleware/requireAuth.js";
+import { authLimiter } from "../middleware/rateLimiters.js";
+import { signupSchema, loginSchema } from "../validation/schemas.js";
+
+// The analyze-risk route that was here has moved to AnalysisRoutes.js, where
+// it runs the real OSINT + risk engine rather than the frontend simulation.
 
 const router = express.Router();
 
-router.post('/signup', signup);
-router.post('/login', login);
-router.post('/analyze-risk', analyzeRisk);
+router.post("/signup", authLimiter, validate({ body: signupSchema }), signup);
+router.post("/login", authLimiter, validate({ body: loginSchema }), login);
+router.get("/me", requireAuth, me);
 
 export default router;
