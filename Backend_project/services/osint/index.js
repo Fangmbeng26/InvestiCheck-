@@ -5,18 +5,7 @@ import { lookupDns } from "./dnsLookup.js";
 import { checkTls } from "./tlsCheck.js";
 import { checkAvailability } from "./availability.js";
 
-// Orchestrates the four probes. Two non-functional requirements shape this:
-//
-// NFR 11.2 (performance): the probes run concurrently via Promise.allSettled,
-// so wall-clock is the slowest single probe rather than the sum of all four.
-//
-// NFR 11.4 (reliability): "the system should remain functional even when one
-// external OSINT service is unavailable ... the system should still allow the
-// user to perform the manual risk assessment". No probe is allowed to throw
-// into the request. Each returns a discriminated result and a failure becomes
-// `unknown`, which lowers the coverage figure instead of the risk score.
 
-/** In-process cache. A single-node deployment does not need Redis for this. */
 const cache = new Map();
 
 const cacheKey = (domain) => `osint:${domain}`;

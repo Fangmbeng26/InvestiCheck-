@@ -3,9 +3,7 @@ import assert from "node:assert/strict";
 import http from "node:http";
 import app from "../app.js";
 
-// Integration tests over the real Express app. These deliberately avoid any
-// route that writes to MongoDB, so the suite runs without a database — the
-// database-backed paths are exercised manually via the Swagger UI.
+
 
 let server;
 let baseUrl;

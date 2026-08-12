@@ -5,8 +5,6 @@ import { requireAuth } from "../middleware/requireAuth.js";
 import { authLimiter } from "../middleware/rateLimiters.js";
 import { signupSchema, loginSchema } from "../validation/schemas.js";
 
-// The analyze-risk route that was here has moved to AnalysisRoutes.js, where
-// it runs the real OSINT + risk engine rather than the frontend simulation.
 
 const router = express.Router();
 

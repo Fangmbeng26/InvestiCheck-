@@ -1,24 +1,9 @@
 import config from "../../config/env.js";
 
-// FR-05: domain creation date, expiry date, registrar, estimated domain age.
-//
-// The SRS specifies a "WHOIS API", but ICANN sunset WHOIS for gTLDs on
-// 28 January 2025 and made RDAP the definitive source; by September 2025, 374
-// gTLDs had disabled WHOIS entirely. RDAP is better for this purpose anyway:
-// HTTPS instead of cleartext port 43, structured JSON instead of scraping
-// free text, no API key, no vendor, no rate limit.
-//
-// Protocol: RFC 9082 (query format), RFC 9083 (JSON responses),
-// RFC 9224 (bootstrap; obsoletes RFC 7484).
-//
-// Verified working against .com (rdap.verisign.com) and Cameroon's .cm
-// (rdap.nic.cm) — the latter matters for this project and is not guaranteed
-// for ccTLDs in general.
+
 
 const BOOTSTRAP_URL = "https://data.iana.org/rdap/dns.json";
 
-// Used only if the IANA bootstrap file itself cannot be fetched. It performs
-// the TLD lookup server-side and 302s to the authoritative registry.
 const FALLBACK_RESOLVER = "https://rdap.org";
 
 const BOOTSTRAP_TTL_MS = 24 * 60 * 60 * 1000;
@@ -29,10 +14,7 @@ let bootstrapFetchedAt = 0;
 
 const fail = (reason, detail) => ({ ok: false, reason, detail });
 
-/**
- * Loads and indexes the IANA bootstrap registry.
- * The file maps groups of TLDs to the RDAP base URLs that serve them.
- */
+
 const loadBootstrap = async (timeoutMs) => {
   const fresh = bootstrapCache && Date.now() - bootstrapFetchedAt < BOOTSTRAP_TTL_MS;
   if (fresh) return bootstrapCache;

@@ -1,8 +1,5 @@
 import rateLimit from "express-rate-limit";
 
-// Plan D-08 / section 8.4: login had no throttle (unlimited credential
-// stuffing) and report submission had none either, which would let one actor
-// bury a legitimate business under fabricated complaints.
 
 const common = {
   standardHeaders: "draft-7",
@@ -10,14 +7,14 @@ const common = {
   message: { error: "Too many requests — please try again later" },
 };
 
-/** Broad ceiling for the whole API. Generous; catches runaway clients. */
+
 export const globalLimiter = rateLimit({
   ...common,
   windowMs: 15 * 60 * 1000,
   limit: 300,
 });
 
-/** Tight limit on credential endpoints. */
+
 export const authLimiter = rateLimit({
   ...common,
   windowMs: 15 * 60 * 1000,

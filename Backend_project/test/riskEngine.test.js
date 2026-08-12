@@ -8,18 +8,12 @@ import {
   classify,
 } from "../services/risk/indicators.js";
 
-// The plan's acceptance criterion for Phase 2: the SRS section 14 worked
-// example must reproduce exactly under v1, and match the plan's recalculation
-// under v2.
 
-/** SRS section 14 inputs, as an OSINT result. Domain age 4 months, HTTPS + DNS fine. */
 const srsExampleOsint = {
   availability: { status: "ok", data: { reachable: true, inconclusive: false } },
   domain_registration: {
     status: "ok",
-    // ~4 months old. SRS section 14 states the domain age but no expiry date,
-    // so daysUntilExpiry stays unknown and the shortRegistration indicator is
-    // excluded from coverage — which is what the plan's 80% figure assumes.
+    
     data: { ageDays: 120, daysUntilExpiry: null },
   },
   dns: { status: "ok", data: { resolves: true, hasMx: true, nameserverCount: 2 } },
@@ -168,8 +162,7 @@ test("deposit + task-based earning together force High Risk", () => {
 });
 
 test("FR-13 band boundaries match the SRS exactly", () => {
-  // 0-30 Low, 31-60 Medium, 61-100 High. These are the SRS's numbers, not the
-  // 40/70 the frontend simulation had drifted to.
+ 
   assert.equal(classify(0).level, "low");
   assert.equal(classify(30).level, "low");
   assert.equal(classify(31).level, "medium");

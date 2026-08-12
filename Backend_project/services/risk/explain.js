@@ -1,12 +1,5 @@
 import { INDICATOR_BY_ID } from "./indicators.js";
 
-// FR-14: "The system shall display the indicators that contributed to the
-// final risk score."
-//
-// SRS section 6 and section 14 constrain the wording. The system must not
-// declare a platform fraudulent — it reports that indicators associated with
-// high-risk schemes are present. Every string here is phrased accordingly:
-// "shows indicators associated with", never "is a scam".
 
 export const LEGAL_DISCLAIMER =
   "This assessment is based on selected risk indicators and publicly available " +

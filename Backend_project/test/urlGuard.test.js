@@ -8,8 +8,6 @@ import {
   RejectionReason,
 } from "../services/urlGuard.js";
 
-// Plan section 5.3 listed ten payloads that the original bare `new URL()` check
-// mishandled. Those exact payloads are the fixture here.
 
 test("rejects non-http(s) schemes", () => {
   for (const input of [
@@ -44,7 +42,7 @@ test("rejects loopback, private and link-local literals", () => {
 });
 
 test("accepts a bare hostname and normalises it to https", () => {
-  // The usability half of the bug: "example.com" is how most people type it.
+  
   const result = normalizeUrl("example.com");
   assert.equal(result.ok, true);
   assert.equal(result.url.protocol, "https:");
@@ -52,8 +50,7 @@ test("accepts a bare hostname and normalises it to https", () => {
 });
 
 test("does not prepend a scheme to something that already has one", () => {
-  // Guards the regression where blind prefixing turns javascript: into
-  // https://javascript:alert(1) and smuggles it past the allowlist.
+ 
   const result = normalizeUrl("javascript:alert(1)");
   assert.equal(result.ok, false);
   assert.equal(result.reason, RejectionReason.BAD_SCHEME);

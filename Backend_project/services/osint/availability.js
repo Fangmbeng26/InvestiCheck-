@@ -1,15 +1,6 @@
 import config from "../../config/env.js";
 import { safeFetch } from "../urlGuard.js";
 
-// Every request goes through safeFetch, so the SSRF controls apply to the
-// initial URL and to each redirect hop.
-
-// Interpretation caution, carried into the result as `inconclusive`: a
-// non-2xx response is weakly diagnostic. Legitimate sites go down, hosting
-// providers block unfamiliar server IPs, and CAPTCHA walls return 403. Only a
-// clean connection failure is treated as "unavailable"; ambiguous HTTP
-// statuses are reported as inconclusive so the risk engine can score them at
-// half weight rather than asserting the site is dead.
 
 /**
  * @returns {Promise<{ok: true, data: object} | {ok: false, reason: string}>}

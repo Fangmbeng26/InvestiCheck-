@@ -1,12 +1,3 @@
-// The single source of truth for every risk indicator: its question, its
-// weight under each model, and the source that justifies it.
-//
-// Plan D-17/D-19: the frontend previously kept its own copy of the weights and
-// thresholds, and the two drifted apart (guaranteed returns scored 30 there vs
-// 25 in the SRS; bands were 40/70 vs the specified 31/61). Nothing else in this
-// codebase may define a weight — the API returns these definitions so the
-// frontend can render them without holding a second copy.
-
 /** Answers are three-state. "unknown" is NOT "no" — see plan section 6.4. */
 export const ANSWER = Object.freeze({
   YES: "yes",
@@ -19,10 +10,7 @@ export const CATEGORY = Object.freeze({
   TECHNICAL: "technical", // OSINT-derived, objectively measured
 });
 
-/**
- * Behavioural indicators (FR-08 … FR-11). 76 points under v2.
- * Self-reported and unverifiable, but the most diagnostic evidence available.
- */
+
 export const BEHAVIOURAL_INDICATORS = [
   {
     id: "guaranteedReturns",

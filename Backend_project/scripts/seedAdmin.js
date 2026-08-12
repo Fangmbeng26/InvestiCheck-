@@ -4,12 +4,6 @@ import readline from "node:readline/promises";
 import config from "../config/env.js";
 import User from "../models/userSchema.js";
 
-// FR-17 needs at least one administrator to exist, and there must be no public
-// endpoint that can create one. This script is the only route to an admin
-// account — run it once, from the server, with:  npm run seed:admin
-//
-// Credentials are prompted for rather than passed as arguments, so they do not
-// end up in shell history.
 
 const prompt = async () => {
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });

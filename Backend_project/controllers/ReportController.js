@@ -3,14 +3,7 @@ import { normalizeUrl } from "../services/urlGuard.js";
 import { asyncHandler } from "../middleware/errorHandler.js";
 import { hashIp } from "./AnalysisController.js";
 
-// FR-15 (user report submission) and FR-16 (storage for administrator review).
-//
-// Reports land as 'pending'. Nothing public — not the FR-18 statistics, not
-// the corroboration override in the risk engine — counts a report until an
-// administrator has reviewed it. That is what stops the feature being a
-// defamation vector (plan section 8.4).
 
-/** GET /api/reports/complaint-types — populates the form's dropdown. */
 export const getComplaintTypes = asyncHandler(async (req, res) => {
   const labels = {
     unable_to_withdraw: "Unable to withdraw money",

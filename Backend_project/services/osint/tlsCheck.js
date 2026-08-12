@@ -1,21 +1,7 @@
 import tls from "node:tls";
 import config from "../../config/env.js";
 
-// FR-07: "The system shall check whether the website uses HTTPS."
-//
-// Both the SRS's example output and the original frontend treated this as
-// "does the string start with https://", which reads the user's typing rather
-// than checking anything. A real check means completing a TLS handshake and
-// inspecting the certificate the server actually presents.
-//
-// That also yields far more than a boolean: whether the chain validates,
-// whether the certificate is expired or hostname-mismatched, who issued it,
-// and how long it runs for.
-//
-// FR-07 also requires telling users that HTTPS does not prove legitimacy —
-// free DV certificates are trivial to obtain and most scam sites have valid
-// HTTPS. That disclaimer is attached to the result here so it cannot be
-// dropped by a caller.
+
 
 export const HTTPS_DISCLAIMER =
   "A valid HTTPS certificate only means traffic to this site is encrypted. " +
@@ -25,12 +11,6 @@ const DEFAULT_PORT = 443;
 
 /**
  * Completes a TLS handshake and reports on the presented certificate.
- *
- * `rejectUnauthorized: false` is deliberate: we want to *inspect* invalid
- * certificates rather than refuse them, since an invalid certificate is
- * exactly the signal we are looking for. The validation verdict is read from
- * socket.authorized instead.
- *
  * @returns {Promise<{ok: true, data: object} | {ok: false, reason: string}>}
  */
 export const checkTls = (hostname, { timeoutMs = config.OSINT_TIMEOUT_MS, port = DEFAULT_PORT } = {}) =>

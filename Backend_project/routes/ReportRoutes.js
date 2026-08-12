@@ -4,7 +4,6 @@ import validate from "../middleware/validate.js";
 import { reportLimiter } from "../middleware/rateLimiters.js";
 import { reportSchema } from "../validation/schemas.js";
 
-// FR-15 and FR-16.
 
 const router = express.Router();
 

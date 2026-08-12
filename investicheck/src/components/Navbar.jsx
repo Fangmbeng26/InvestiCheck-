@@ -42,8 +42,8 @@ function Navbar() {
           ) : (
             <>
           <Link to="/login">Login</Link>
-          <Link to="/signup">Sign Up</Link>
-          <Link to="/signup" className="btn-primary navbar__cta" onClick={closeMenu}>
+          <Link to="/signup">Sign In</Link>
+          <Link to="/signup" className="btn-primary_navbar__cta" onClick={closeMenu}>
             Get Started
           </Link>
           </>

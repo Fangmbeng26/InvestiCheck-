@@ -4,17 +4,10 @@ import User from "../models/userSchema.js";
 import config from "../config/env.js";
 import { AppError, asyncHandler } from "../middleware/errorHandler.js";
 
-// The generic-401 and no-hash-in-response fixes were already applied here.
-// This keeps that behaviour and moves the plumbing onto the shared pieces:
-// zod handles the required-field checks at the route, config/env.js supplies a
-// secret that was validated at boot (D-05), and asyncHandler + errorHandler
-// replace the per-function try/catch.
+
 
 const BCRYPT_ROUNDS = 10;
 
-// A real bcrypt hash of a value nobody can supply. Comparing against this when
-// the email is unknown keeps both failure paths roughly the same duration, so
-// response timing does not reveal which emails are registered.
 const DUMMY_HASH = "$2b$10$CwTycUXWue0Thq9StjUM0uJ8e1F3zP7iVGZ1p8m4YQ0Bx8gK0h5qO";
 
 const issueToken = (user) =>

@@ -1,9 +1,5 @@
 import { AppError } from "./errorHandler.js";
 
-// Plan D-14: validation used to be hand-rolled truthiness checks scattered
-// through the controllers. Every route now declares a zod schema and the
-// parsed, typed result replaces the raw input — so controllers can trust what
-// they receive and unknown keys never reach Mongoose.
 
 /**
  * @param {object} schemas - any of { body, query, params }, each a zod schema

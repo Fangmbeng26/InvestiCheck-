@@ -45,8 +45,9 @@ function CheckInvestment() {
         setLoadStatus('success')
       })
       .catch((error) => {
+        console.error('Error loading indicators:', error)
         setLoadError(
-          error.response?.data?.message || 'Could not load the assessment questions.'
+          error.response?.data?.message || error.message || 'Could not load the assessment questions.'
         )
         setLoadStatus('error')
       })

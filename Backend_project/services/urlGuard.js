@@ -1,22 +1,6 @@
 import dns from "node:dns/promises";
 import net from "node:net";
 
-// Plan section 8.1. The core function of this system is "take a URL from an
-// anonymous stranger and have the server connect to it", which is the textbook
-// SSRF setup. Every outbound request in the OSINT module goes through here.
-//
-// The frontend's original check was a bare `new URL()` in a try/catch, which
-// accepted javascript:, file:///etc/passwd, http://127.0.0.1 and
-// http://169.254.169.254/ (cloud instance metadata) while rejecting
-// "example.com" — the most common way a non-technical user types an address.
-//
-// Controls implemented, per the OWASP SSRF Prevention Cheat Sheet:
-//   - strict scheme allowlist (http/https only)
-//   - scheme normalisation so bare hostnames are usable
-//   - private / reserved / link-local IP blocking for both IPv4 and IPv6
-//   - resolve-then-validate, returning the pinned IPs so the caller connects
-//     to an address that was actually checked (DNS rebinding)
-//   - explicit redirect handling, re-validated per hop, capped
 
 const ALLOWED_PROTOCOLS = new Set(["http:", "https:"]);
 

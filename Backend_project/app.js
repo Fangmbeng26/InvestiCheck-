@@ -39,7 +39,7 @@ app.use(
 
 app.use(
   cors({
-    origin: config.CORS_ORIGIN,
+    origin: config.NODE_ENV !== "production" ? true : config.CORS_ORIGIN,
     credentials: true,
   })
 );

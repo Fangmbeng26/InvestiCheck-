@@ -7,27 +7,7 @@ import {
   MIN_COVERAGE_FOR_LOW_RISK,
 } from "./indicators.js";
 
-// FR-12 (risk score) and FR-13 (classification).
-//
-// Two models are implemented on purpose:
-//
-//   v1  the SRS model exactly as written, so the specification is satisfied
-//       and reproducible. Its six weights sum to 120 on a 0-100 scale, so it
-//       can overflow; that is a property of the specification, preserved here
-//       rather than silently patched.
-//
-//   v2  normalised: weights sum to exactly 100, every collected indicator
-//       carries weight, and "unknown" is distinct from "no" and reduces
-//       coverage instead of reducing risk.
-//
-// Keeping both makes the v1-vs-v2 comparison in the evaluation chapter a
-// direct experiment rather than an argument.
 
-/**
- * Derives technical indicator severities from an OSINT result.
- * Returns null for an indicator whose evidence is missing, which becomes
- * "unknown" and lowers coverage.
- */
 export const deriveTechnicalSeverities = (osint) => {
   const severities = {};
 
@@ -36,8 +16,7 @@ export const deriveTechnicalSeverities = (osint) => {
   if (domainData?.status === "ok" && domainData.data?.ageDays !== null) {
     severities.domainAge = severityForDomainAge(domainData.data.ageDays)?.severity ?? null;
   } else if (domainData?.status === "not_found") {
-    // The registry says there is no such registration, yet a user was given
-    // this address. Treat as maximum severity for this indicator.
+  
     severities.domainAge = 1;
   } else {
     severities.domainAge = null;

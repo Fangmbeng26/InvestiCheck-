@@ -1,11 +1,7 @@
 import { BEHAVIOURAL_INDICATORS, RISK_BANDS } from "../services/risk/indicators.js";
 import { COMPLAINT_TYPES } from "../models/reportSchema.js";
 
-// Hand-authored OpenAPI 3.0 document, served by swagger-ui-express at
-// /api/docs. Written as a module rather than annotations so the whole contract
-// is readable in one place, and so the indicator list and complaint types are
-// generated from the same definitions the engine uses — the docs cannot drift
-// from the implementation.
+
 
 const answerExample = Object.fromEntries(
   BEHAVIOURAL_INDICATORS.map((indicator, index) => [
