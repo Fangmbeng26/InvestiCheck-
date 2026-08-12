@@ -1,0 +1,62 @@
+.score-gauge {
+  position: relative;
+  width: 212px;
+  max-width: 100%;
+}
+
+.score-gauge__svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.score-gauge__track {
+  stroke: #e2e8f0;
+}
+
+.score-gauge__fill {
+  transition: stroke-dasharray 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.score-gauge--low .score-gauge__fill {
+  stroke: var(--green);
+}
+
+.score-gauge--medium .score-gauge__fill {
+  stroke: var(--orange);
+}
+
+.score-gauge--high .score-gauge__fill {
+  stroke: var(--red);
+}
+
+/* An unresolved assessment is deliberately grey: colouring it green or amber
+   would imply a verdict the evidence does not support. */
+.score-gauge--insufficient_data .score-gauge__fill {
+  stroke: var(--text-muted);
+}
+
+.score-gauge__readout {
+  position: absolute;
+  bottom: 4px;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+}
+
+.score-gauge__value {
+  font-size: 46px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--navy);
+}
+
+.score-gauge__max {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-muted);
+}

@@ -1,3 +1,7 @@
+/* Class names use the same double-underscore convention as the markup.
+   An earlier revision declared these with single underscores, so no rule
+   matched and the bar rendered completely unstyled. */
+
 .navbar {
   background-color: var(--white);
   border-bottom: 1px solid var(--border);
@@ -6,52 +10,77 @@
   z-index: 50;
 }
 
-.navbar_inner {
+.navbar__inner {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 24px;
   height: 72px;
 }
 
-.navbar_logo {
+.navbar__logo {
   display: flex;
   align-items: center;
   gap: 8px;
   font-weight: 700;
   font-size: 19px;
   color: var(--navy);
+  flex-shrink: 0;
 }
 
-.navbar_links {
+.navbar__links {
   display: flex;
   align-items: center;
-  gap: 36px;
+  gap: 26px;
 }
 
-.navbar_links a {
+/* Plain navigation links. `background` is deliberately not reset here: the
+   call-to-action is also an anchor in this list, and clearing its background
+   left it invisible until hover re-applied one. */
+.navbar__links a,
+.navbar__signout {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
   font-size: 15px;
   font-weight: 500;
   color: var(--text-secondary);
+  white-space: nowrap;
   transition: color 0.15s ease;
 }
-.btn-primary_navbar__cta{
-color: var(--white);
+
+/* Only the sign-out control needs its button chrome removed. */
+.navbar__signout {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
 }
 
-.navbar_links a:hover {
+.navbar__links a:hover,
+.navbar__signout:hover {
   color: var(--navy);
 }
 
-.navbar_cta {
-  padding: 10px 22px;
-  font-size: 14px;
+/* The current page is marked so the visitor can tell where they are without
+   re-reading the heading. */
+.navbar__links a.is-active {
+  color: var(--navy);
+  font-weight: 600;
 }
 
-.navbar_cta:hover {
+/* The call to action is a filled button, so it needs the inverse treatment —
+   including on hover, where the shared link rule would otherwise darken it
+   into the background. */
+.navbar__links a.navbar__cta,
+.navbar__links a.navbar__cta:hover {
   color: var(--white);
+  padding: 10px 20px;
+  font-size: 14.5px;
+  font-weight: 600;
 }
 
-.navbar_hamburger {
+.navbar__hamburger {
   display: none;
   background: none;
   border: none;
@@ -59,38 +88,41 @@ color: var(--white);
   padding: 4px;
 }
 
-.navbar_mobile-menu {
+.navbar__mobile-menu {
   display: none;
 }
 
-@media (max-width: 860px) {
-  .navbar_links {
+@media (max-width: 900px) {
+  .navbar__links {
     display: none;
   }
 
-  .navbar_hamburger {
+  .navbar__hamburger {
     display: flex;
   }
 
-  .navbar_mobile-menu {
+  .navbar__mobile-menu {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    align-items: stretch;
+    gap: 2px;
     padding: 8px 24px 20px;
     border-top: 1px solid var(--border);
     background-color: var(--white);
   }
 
-  .navbar_mobile-menu a {
-    padding: 12px 0;
+  .navbar__mobile-menu a,
+  .navbar__mobile-menu .navbar__signout {
+    padding: 13px 0;
     font-size: 15px;
     font-weight: 500;
     color: var(--navy);
+    text-align: left;
   }
 
-  .navbar_mobile-menu .btn-primary {
+  .navbar__mobile-menu .btn-primary {
     justify-content: center;
-    margin-top: 8px;
+    margin-top: 10px;
     color: var(--white);
   }
 }

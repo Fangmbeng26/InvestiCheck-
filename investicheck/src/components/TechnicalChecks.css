@@ -1,0 +1,105 @@
+.technical-checks {
+  background-color: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 22px;
+  box-shadow: var(--shadow-sm);
+}
+
+.technical-checks__heading {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.technical-checks__list {
+  margin-top: 16px;
+  display: grid;
+  gap: 4px;
+}
+
+.technical-check {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 11px 12px;
+  border-radius: var(--radius-sm);
+  transition: background-color 0.2s ease;
+}
+
+.technical-check__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+}
+
+.technical-check__title {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--navy);
+}
+
+.technical-check__detail {
+  font-size: 13.5px;
+  color: var(--text-muted);
+  margin-top: 1px;
+}
+
+.technical-check--clear .technical-check__icon {
+  background-color: #dcfce7;
+  color: #15803d;
+}
+
+.technical-check--concerning {
+  background-color: #fef2f2;
+}
+
+.technical-check--concerning .technical-check__icon {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+.technical-check--concerning .technical-check__detail {
+  color: #b91c1c;
+}
+
+.technical-check--unavailable .technical-check__icon {
+  background-color: #f1f5f9;
+  color: var(--text-muted);
+}
+
+.technical-check--running .technical-check__icon {
+  background-color: #f1f5f9;
+  color: var(--text-muted);
+}
+
+.technical-check__spinner {
+  animation: technical-check-spin 1s linear infinite;
+}
+
+@keyframes technical-check-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.technical-checks__error {
+  margin-top: 14px;
+  font-size: 14px;
+  color: #b91c1c;
+}
+
+.technical-checks__caveat {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--text-muted);
+}

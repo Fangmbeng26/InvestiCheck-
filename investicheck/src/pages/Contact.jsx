@@ -16,7 +16,7 @@ const faqs = [
   {
     question: 'Is InvestiCheck a financial advisor?',
     answer:
-      'No. InvestiCheck highlights common warning signs so you can research further — it does not provide investment or legal advice.',
+      'No. InvestiCheck highlights common warning signs so you can research further. It does not provide investment or legal advice.',
   },
   {
     question: 'Is my submitted platform information stored?',
@@ -88,7 +88,7 @@ function Contact() {
             <FormCard as="form" onSubmit={handleSubmit} noValidate>
               {submitted && (
                 <p className="auth-page__success">
-                  Thanks — your message was validated. Sending isn't connected to a backend yet.
+                  Thank you. Your message was validated. Sending isn't connected to a backend yet.
                 </p>
               )}
 

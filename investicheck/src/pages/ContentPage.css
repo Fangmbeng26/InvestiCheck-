@@ -1,0 +1,112 @@
+/* Shared layout for the reading pages: How It Works and Privacy. */
+
+.content-page {
+  padding: 56px 0 88px;
+}
+
+.content-page__inner {
+  max-width: 860px;
+}
+
+.content-page__inner--narrow {
+  max-width: 720px;
+}
+
+.content-page__panel {
+  margin-top: 20px;
+}
+
+.content-page__panel p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  font-size: 15.5px;
+}
+
+.content-page__panel p + p {
+  margin-top: 12px;
+}
+
+.content-page__panel-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 10px;
+}
+
+.content-page__cta {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+}
+
+/* ---------------------------- How It Works steps ------------------------- */
+
+.how-steps {
+  margin-top: 32px;
+  display: grid;
+  gap: 14px;
+}
+
+.how-step {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto auto 1fr;
+  align-items: start;
+  gap: 16px;
+  padding: 22px;
+  background-color: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+
+.how-step__number {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: var(--navy);
+  color: var(--white);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.how-step__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-sm);
+  background-color: #eff6ff;
+  color: #1d4ed8;
+}
+
+.how-step__title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.how-step__body {
+  margin-top: 5px;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+@media (max-width: 560px) {
+  .how-step {
+    grid-template-columns: auto 1fr;
+    row-gap: 10px;
+  }
+
+  .how-step__icon {
+    display: none;
+  }
+}

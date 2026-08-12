@@ -16,6 +16,27 @@ import AdminRoutes from "./routes/AdminRoutes.js";
 import { globalLimiter } from "./middleware/rateLimiters.js";
 import { errorHandler, notFoundHandler } from "./middleware/errorHandler.js";
 
+// Which browser origins may call this API.
+//
+// Development accepts any localhost port, because the dev server moves between
+// ports and 127.0.0.1 and localhost are distinct origins to a browser — a
+// fixed list turns that into a confusing CORS failure several times a day.
+// It stays a rule rather than becoming "reflect whatever origin asked":
+// combined with credentials, reflecting any origin would let any site on the
+// internet make authenticated calls on a signed-in administrator's behalf.
+const LOCAL_ORIGIN = /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/;
+
+const buildCorsOrigin = () => {
+  if (config.NODE_ENV === "production") return config.CORS_ORIGIN;
+
+  return (origin, callback) => {
+    // Same-origin and non-browser callers (curl, the Swagger page) send no
+    // Origin header at all; there is nothing to check.
+    if (!origin) return callback(null, true);
+    callback(null, LOCAL_ORIGIN.test(origin) || config.CORS_ORIGIN.includes(origin));
+  };
+};
+
 const app = express();
 
 // Tests import the app without a database
@@ -39,7 +60,7 @@ app.use(
 
 app.use(
   cors({
-    origin: config.NODE_ENV !== "production" ? true : config.CORS_ORIGIN,
+    origin: buildCorsOrigin(),
     credentials: true,
   })
 );

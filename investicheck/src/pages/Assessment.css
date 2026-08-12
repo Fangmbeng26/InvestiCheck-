@@ -1,0 +1,88 @@
+.assessment-page {
+  padding: 56px 0 88px;
+}
+
+.assessment-page__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 28px;
+  align-items: start;
+  margin-top: 32px;
+}
+
+.assessment-page__intro {
+  padding-bottom: 4px;
+}
+
+.assessment-page__questions-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.assessment-page__questions-lead {
+  margin-top: 8px;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 62ch;
+}
+
+.assessment-page__questions {
+  margin-top: 8px;
+  border-top: 1px solid var(--border);
+}
+
+.assessment-page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid var(--border);
+}
+
+.assessment-page__progress {
+  flex-basis: 100%;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.assessment-page__retry {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  font-weight: 600;
+  color: inherit;
+  text-decoration: underline;
+}
+
+/* The checks panel follows the reader down the questions, so findings stay
+   visible while the form is being worked through. */
+.assessment-page__side {
+  position: sticky;
+  top: 24px;
+}
+
+@media (max-width: 980px) {
+  .assessment-page__layout {
+    grid-template-columns: 1fr;
+  }
+
+  /* On a narrow screen the panel is placed above the questions: the automated
+     findings are the first thing worth seeing, and sticky positioning has no
+     room to work. */
+  .assessment-page__side {
+    position: static;
+    order: -1;
+  }
+}
+
+@media (max-width: 620px) {
+  .assessment-page {
+    padding: 36px 0 64px;
+  }
+}

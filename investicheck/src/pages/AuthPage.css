@@ -96,3 +96,18 @@
     flex-wrap: wrap;
   }
 }
+
+/* Supporting copy on the account-help page. */
+.auth-page__note {
+  margin-top: 16px;
+  font-size: 14.5px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+}
+
+.auth-page__actions {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}

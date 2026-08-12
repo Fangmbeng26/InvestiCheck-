@@ -83,10 +83,10 @@ function SignUp() {
       await register(formData)
       // Signup logs the user in immediately (the backend returns a token),
       // so go straight to the dashboard rather than back to Login.
-      navigate('/dashboard')
+      navigate('/check-investment', { replace: true })
     } catch (error) {
       setServerError(
-        error.response?.data?.message || 'Something went wrong while creating your account.'
+        error.message || 'Something went wrong while creating your account.'
       )
     } finally {
       setSubmitting(false)

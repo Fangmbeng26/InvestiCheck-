@@ -11,7 +11,14 @@ import FormCard from '../components/form/FormCard.jsx'
 import FormInput from '../components/form/FormInput.jsx'
 import FormSelect from '../components/form/FormSelect.jsx'
 import { useAuth } from '../context/AuthContext.jsx'
-import api from '../Services/api.js'
+import {
+  addWatchlistEntry,
+  fetchAdminReports,
+  fetchAdminStats,
+  fetchWatchlist,
+  moderateReport,
+  removeWatchlistEntry,
+} from '../Services/investicheckApi.js'
 import './AdminDashboard.css'
 
 const regulators = ['COSUMAF', 'MINFI', 'BEAC', 'other']
@@ -38,24 +45,21 @@ function AdminDashboard() {
   const [watchlistFormError, setWatchlistFormError] = useState('')
 
   const loadStats = () => {
-    api
-      .get('/api/admin/stats')
-      .then((res) => setStats(res.data))
-      .catch((err) => setStatsError(err.response?.data?.message || 'Could not load statistics.'))
+    fetchAdminStats()
+      .then(setStats)
+      .catch((err) => setStatsError(err.message || 'Could not load statistics.'))
   }
 
   const loadPendingReports = () => {
-    api
-      .get('/api/admin/reports', { params: { status: 'pending', page: 1, limit: 20 } })
-      .then((res) => setPendingReports(res.data.items))
-      .catch((err) => setReportsError(err.response?.data?.message || 'Could not load reports.'))
+    fetchAdminReports({ status: 'pending', page: 1, limit: 20 })
+      .then((data) => setPendingReports(data.items))
+      .catch((err) => setReportsError(err.message || 'Could not load reports.'))
   }
 
   const loadWatchlist = () => {
-    api
-      .get('/api/admin/watchlist')
-      .then((res) => setWatchlist(res.data.items))
-      .catch((err) => setWatchlistError(err.response?.data?.message || 'Could not load the watchlist.'))
+    fetchWatchlist()
+      .then((data) => setWatchlist(data.items))
+      .catch((err) => setWatchlistError(err.message || 'Could not load the watchlist.'))
   }
 
   useEffect(() => {
@@ -66,11 +70,11 @@ function AdminDashboard() {
 
   const handleModerate = async (reportId, status) => {
     try {
-      await api.patch(`/api/admin/reports/${reportId}`, { status })
+      await moderateReport(reportId, { status })
       // Remove it from the pending queue locally rather than refetching.
       setPendingReports((prev) => prev.filter((r) => r._id !== reportId))
     } catch (err) {
-      setReportsError(err.response?.data?.message || 'Could not update that report.')
+      setReportsError(err.message || 'Could not update that report.')
     }
   }
 
@@ -84,28 +88,28 @@ function AdminDashboard() {
     }
 
     try {
-      const response = await api.post('/api/admin/watchlist', {
+      const { entry } = await addWatchlistEntry({
         entityName: newEntry.entityName,
         regulator: newEntry.regulator,
         sourceUrl: newEntry.sourceUrl,
         domains: newEntry.domains
-          ? newEntry.domains.split(',').map((d) => d.trim()).filter(Boolean)
+          ? newEntry.domains.split(',').map((domain) => domain.trim()).filter(Boolean)
           : [],
         notes: newEntry.notes || undefined,
       })
-      setWatchlist((prev) => [...prev, response.data.entry])
+      setWatchlist((previous) => [...previous, entry])
       setNewEntry({ entityName: '', regulator: '', sourceUrl: '', domains: '', notes: '' })
     } catch (err) {
-      setWatchlistFormError(err.response?.data?.message || 'Could not add that entry.')
+      setWatchlistFormError(err.message || 'Could not add that entry.')
     }
   }
 
   const handleDeleteWatchlistEntry = async (id) => {
     try {
-      await api.delete(`/api/admin/watchlist/${id}`)
+      await removeWatchlistEntry(id)
       setWatchlist((prev) => prev.filter((entry) => entry._id !== id))
     } catch (err) {
-      setWatchlistError(err.response?.data?.message || 'Could not remove that entry.')
+      setWatchlistError(err.message || 'Could not remove that entry.')
     }
   }
 
@@ -123,7 +127,7 @@ function AdminDashboard() {
             <PageHeader
               icon={ShieldAlert}
               eyebrow="Administrator"
-              title={user?.firstName ? `Admin Panel — ${user.firstName}` : 'Admin Panel'}
+              title={user?.firstName ? `Admin panel: ${user.firstName}` : 'Admin Panel'}
               subtitle="Report moderation and regulator watch-list management."
             />
             <SecondaryButton onClick={handleLogout}>
@@ -188,7 +192,7 @@ function AdminDashboard() {
                     <div>
                       <p className="admin-report__platform">{report.platformName}</p>
                       <p className="admin-report__meta">
-                        {report.complaintType} — {report.website || 'no website given'}
+                        {report.complaintType} ({report.website || 'no website given'})
                       </p>
                       <p className="admin-report__description">{report.description}</p>
                     </div>

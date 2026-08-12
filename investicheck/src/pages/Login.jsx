@@ -19,7 +19,12 @@ function Login() {
   const location = useLocation()
   const { login } = useAuth()
 
-  const redirectPath = location.state?.from || '/dashboard'
+  // Return the visitor to whatever they were trying to reach. Failing that,
+  // administrators land on their dashboard and everyone else on the home page —
+  // sending a general user to an admin-only route would bounce them straight
+  // back out again.
+  const redirectAfterSignIn = (user) =>
+    location.state?.from ?? (user?.role === 'admin' ? '/admin' : '/')
 
 
   const [formData, setFormData] = useState({
@@ -61,12 +66,10 @@ function Login() {
 
     setSubmitted(true)
     try{
-     const user = await login({ email: formData.email, password: formData.password})
-     const destination = user?.role === 'admin' ? '/admin' : redirectTo
-
-      navigate(destination, { replace: true })
+      const user = await login({ email: formData.email, password: formData.password })
+      navigate(redirectAfterSignIn(user), { replace: true })
     } catch (error) {
-      setServerError(error.response?.data?.message || 'An error occurred during login. Please try again.')
+      setServerError(error.message)
     } finally {
       setSubmitted(false)
     }
@@ -79,9 +82,9 @@ function Login() {
         <div className="container auth-page__inner">
           <PageHeader
             icon={LogIn}
-            eyebrow="Welcome back"
-            title="Log in to InvestiCheck"
-            subtitle="Access your saved reports and continue where you left off."
+            eyebrow="Administrator access"
+            title="Sign in"
+            subtitle="Accounts are for the team who review submitted reports and maintain the regulator watchlist. Checking a platform needs no account."
             centered
           />
 
@@ -118,22 +121,21 @@ function Login() {
               <FormCheckbox
                 id="rememberMe"
                 name="rememberMe"
-                label="Remind me"
+                label="Keep me signed in"
                 checked={formData.rememberMe}
                 onChange={handleChange}
               />
               <Link to="/forgot-password" className="link-secondary auth-page__forgot">
-                Forgot Password?
+                Forgot your password?
               </Link>
             </div>
 
             <PrimaryButton type="submit" className="auth-page__submit" disabled={submitted}>
-              {submitted ? 'Logging in...' : 'Log in'}
-              Login →
+              {submitted ? 'Signing in…' : 'Sign in'}
             </PrimaryButton>
 
             <p className="auth-page__switch">
-              Don&apos;t have an account? <Link to="/register">Create Account</Link>
+              Need an account? <Link to="/signup">Create one</Link>
             </p>
           </FormCard>
         </div>

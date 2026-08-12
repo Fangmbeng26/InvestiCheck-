@@ -3,7 +3,7 @@ import Analysis from "../models/analysisSchema.js";
 import Report from "../models/reportSchema.js";
 import Watchlist from "../models/watchlistSchema.js";
 import config from "../config/env.js";
-import { collectOsint, toStoredShape } from "../services/osint/index.js";
+import { collectOsint, toStoredShape, fromStoredShape } from "../services/osint/index.js";
 import { assess } from "../services/risk/engine.js";
 import { explain } from "../services/risk/explain.js";
 import { ALL_INDICATORS, BEHAVIOURAL_INDICATORS, RISK_BANDS } from "../services/risk/indicators.js";
@@ -127,6 +127,12 @@ export const getAnalysis = asyncHandler(async (req, res) => {
   }
 
 
+  // Present the stored evidence in the same shape a fresh assessment returns,
+  // so a saved or shared result renders identically to the original.
+  const osint = fromStoredShape(analysis.osint);
+
+  // The wording is rebuilt rather than stored, so improvements to how results
+  // are explained apply to past assessments too.
   const explanation = explain(
     {
       riskLevel: analysis.riskLevel,
@@ -136,10 +142,10 @@ export const getAnalysis = asyncHandler(async (req, res) => {
       coverage: analysis.coverage,
       insufficientData: analysis.insufficientData,
     },
-    null
+    osint
   );
 
-  res.json({ ...analysis, id: analysis._id, explanation });
+  res.json({ ...analysis, id: analysis._id, osint, explanation });
 });
 
 

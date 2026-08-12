@@ -1,38 +1,22 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { KeyRound } from 'lucide-react'
 import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
 import PageHeader from '../components/PageHeader.jsx'
-import PrimaryButton from '../components/PrimaryButton.jsx'
+import SecondaryButton from '../components/SecondaryButton.jsx'
 import FormCard from '../components/form/FormCard.jsx'
-import FormInput from '../components/form/FormInput.jsx'
+import Alert from '../components/Alert.jsx'
 import './AuthPage.css'
 
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+// Self-service password reset is not built yet: it needs an email service and
+// a token flow that the service does not currently have.
+//
+// The earlier version of this page accepted an address and replied that a
+// reset link had been sent. Nothing was ever sent, so anyone who used it would
+// wait for an email that could not arrive. Saying plainly that the feature is
+// unavailable is less convenient and considerably more useful.
 
 function ForgotPassword() {
-  const [email, setEmail] = useState('')
-  const [error, setError] = useState('')
-  const [submitted, setSubmitted] = useState(false)
-
-  const handleSubmit = (event) => {
-    event.preventDefault()
-    setSubmitted(false)
-
-    if (!email.trim()) {
-      setError('Email address is required.')
-      return
-    }
-    if (!EMAIL_PATTERN.test(email)) {
-      setError('Enter a valid email address.')
-      return
-    }
-
-    setError('')
-    setSubmitted(true)
-  }
-
   return (
     <>
       <Navbar />
@@ -40,36 +24,29 @@ function ForgotPassword() {
         <div className="container auth-page__inner">
           <PageHeader
             icon={KeyRound}
-            eyebrow="Reset your password"
-            title="Forgot Password"
-            subtitle="Enter your email and we'll send you a link to reset your password."
+            eyebrow="Account help"
+            title="Resetting your password"
+            subtitle="Accounts on InvestiCheck are only used by administrators who review reports."
             centered
           />
 
-          <FormCard as="form" onSubmit={handleSubmit} noValidate>
-            {submitted ? (
-              <p className="auth-page__success">
-                If an account exists for {email}, a reset link has been sent. 
-              </p>
-            ) : (
-              <FormInput
-                id="email"
-                name="email"
-                label="Email Address"
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                error={error}
-              />
-            )}
+          <FormCard>
+            <Alert variant="info" title="Password reset is not available yet">
+              We cannot send reset emails at the moment. To regain access to an administrator
+              account, ask whoever maintains this installation to reset it for you directly.
+            </Alert>
 
-            <PrimaryButton type="submit" className="auth-page__submit">
-              Send Reset Link →
-            </PrimaryButton>
+            <p className="auth-page__note">
+              If you were trying to check an investment platform, you do not need an account at
+              all. The assessment and reporting tools are open to everyone.
+            </p>
+
+            <div className="auth-page__actions">
+              <SecondaryButton to="/check-investment">Check a platform</SecondaryButton>
+            </div>
 
             <p className="auth-page__switch">
-              Remembered your password? <Link to="/login">Login</Link>
+              Remembered your password? <Link to="/login">Sign in</Link>
             </p>
           </FormCard>
         </div>

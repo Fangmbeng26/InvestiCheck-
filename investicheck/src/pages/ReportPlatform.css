@@ -1,0 +1,78 @@
+.report-platform-page {
+  padding: 56px 0 88px;
+}
+
+.report-platform-page__inner,
+.report-platform-page__narrow {
+  max-width: 720px;
+}
+
+.report-platform-page__privacy {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: var(--text-muted);
+  padding: 12px 14px;
+  background-color: #f8fafc;
+  border-radius: var(--radius-sm);
+}
+
+/* ------------------------------ Confirmation ----------------------------- */
+
+.report-platform-page__confirmation {
+  text-align: center;
+  background-color: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 48px 32px;
+  box-shadow: var(--shadow-md);
+}
+
+.report-platform-page__tick {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 62px;
+  height: 62px;
+  border-radius: 50%;
+  background-color: #dcfce7;
+  color: #15803d;
+  margin-bottom: 18px;
+}
+
+.report-platform-page__confirmation h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--navy);
+}
+
+.report-platform-page__confirmation p {
+  margin-top: 12px;
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--text-secondary);
+  max-width: 54ch;
+  margin-inline: auto;
+}
+
+.report-platform-page__followup {
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.report-platform-page__confirmation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin-top: 26px;
+}
+
+@media (max-width: 620px) {
+  .report-platform-page {
+    padding: 36px 0 64px;
+  }
+
+  .report-platform-page__confirmation {
+    padding: 34px 22px;
+  }
+}

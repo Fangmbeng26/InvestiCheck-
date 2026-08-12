@@ -1,94 +1,55 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ShieldCheck, AlertCircle } from 'lucide-react'
+import { ArrowRight, Search, ShieldCheck } from 'lucide-react'
 import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
 import PageHeader from '../components/PageHeader.jsx'
 import PrimaryButton from '../components/PrimaryButton.jsx'
-import SecondaryButton from '../components/SecondaryButton.jsx'
 import FormCard from '../components/form/FormCard.jsx'
 import FormInput from '../components/form/FormInput.jsx'
-import IndicatorQuestion from '../components/IndicatorQuestions.jsx'
-import api from '../Services/api.js'
+import { validateWebsite } from '../utils/website.js'
 import './CheckInvestment.css'
+
+// Step one of the assessment: identify the platform.
+//
+// Only two fields are asked here, even though the assessment needs more. The
+// automated website checks take a couple of seconds, so the questions are
+// deferred to the next screen where they can be answered while those checks
+// run. Asking everything up front would mean a long form followed by a blank
+// wait, instead of a short form followed by useful work.
 
 function CheckInvestment() {
   const navigate = useNavigate()
+  const [values, setValues] = useState({ platformName: '', website: '' })
+  const [errors, setErrors] = useState({})
 
+  const handleChange = (event) => {
+    const { name, value } = event.target
+    setValues((previous) => ({ ...previous, [name]: value }))
 
-  const [platformName, setPlatformName] = useState('')
-  const [website, setWebsite] = useState('')
-  const [fieldErrors, setFieldErrors] = useState({})
-
-
-  const [questions, setQuestions] = useState([])
-  const [technicalIndicators, setTechnicalIndicators] = useState([])
-  const [loadStatus, setLoadStatus] = useState('pending') // pending | success | error
-  const [loadError, setLoadError] = useState('')
-
-  // indicatorId -> 'yes' | 'no' | 'unknown'
-  const [answers, setAnswers] = useState({})
-
-  const loadIndicators = () => {
-    setLoadStatus('pending')
-    api
-      .get('/api/analysis/indicators')
-      .then((response) => {
-        setQuestions(response.data.questions)
-        setTechnicalIndicators(response.data.technicalIndicators || [])
-      
-        const initialAnswers = {}
-        response.data.questions.forEach((q) => {
-          initialAnswers[q.id] = 'unknown'
-        })
-        setAnswers(initialAnswers)
-        setLoadStatus('success')
-      })
-      .catch((error) => {
-        console.error('Error loading indicators:', error)
-        setLoadError(
-          error.response?.data?.message || error.message || 'Could not load the assessment questions.'
-        )
-        setLoadStatus('error')
-      })
-  }
-
-  useEffect(() => {
-    loadIndicators()
-  }, [])
-
-  const handleAnswerChange = (id, value) => {
-    setAnswers((prev) => ({ ...prev, [id]: value }))
-  }
-
-  const validate = () => {
-    const nextErrors = {}
-
-    if (!platformName.trim()) {
-      nextErrors.platformName = 'Platform name is required.'
+    // Clear the message once the user starts correcting the field. Leaving it
+    // in place while they retype reads as though the new value is wrong too.
+    if (errors[name]) {
+      setErrors((previous) => ({ ...previous, [name]: undefined }))
     }
-
-    if (!website.trim()) {
-      nextErrors.website = 'Website URL is required.'
-    } else {
-      try {
-        new URL(website)
-      } catch {
-        nextErrors.website = 'Enter a valid URL, including https://'
-      }
-    }
-
-    setFieldErrors(nextErrors)
-    return Object.keys(nextErrors).length === 0
   }
 
   const handleSubmit = (event) => {
     event.preventDefault()
 
-    if (!validate()) return
+    const nextErrors = {}
+    if (!values.platformName.trim()) {
+      nextErrors.platformName = 'Enter the name of the platform.'
+    }
+    const websiteError = validateWebsite(values.website)
+    if (websiteError) nextErrors.website = websiteError
 
-    // The Analysis.jsx reads this shape and POSTs it to /api/analysis.
-    navigate('/analysis', { state: { platformName, website, answers } })
+    setErrors(nextErrors)
+    if (Object.keys(nextErrors).length > 0) return
+
+    navigate('/assessment', {
+      state: { platformName: values.platformName.trim(), website: values.website.trim() },
+    })
   }
 
   return (
@@ -97,81 +58,53 @@ function CheckInvestment() {
       <main className="check-page">
         <div className="container check-page__inner">
           <PageHeader
-            icon={ShieldCheck}
-            eyebrow="Step 1 of 3"
-            title="Check an Investment Platform"
-            subtitle="Enter the platform's details, then answer what you know about it. It's fine to leave answers as “Don't know” — that's a real, honest answer here."
+            icon={Search}
+            eyebrow="Step 1 of 2"
+            title="Check an investment platform"
+            subtitle="Tell us which platform you want to look into. We will check its website automatically, then ask you a few short questions about how it works."
           />
 
-          {loadStatus === 'error' && (
-            <FormCard className="check-page__load-error">
-              <AlertCircle size={20} />
-              <p>{loadError}</p>
-              <p className="check-page__load-error-hint">
-                Make sure the backend server is running and reachable.
-              </p>
-              <PrimaryButton onClick={loadIndicators}>Try Again</PrimaryButton>
-            </FormCard>
-          )}
+          <FormCard as="form" onSubmit={handleSubmit} noValidate>
+            <FormInput
+              id="platformName"
+              name="platformName"
+              label="Platform name"
+              placeholder="For example, Sunrise Capital"
+              value={values.platformName}
+              onChange={handleChange}
+              error={errors.platformName}
+              autoComplete="off"
+              autoFocus
+            />
 
-          {loadStatus === 'pending' && (
-            <FormCard>
-              <p className="check-page__loading">Loading assessment questions…</p>
-            </FormCard>
-          )}
+            <FormInput
+              id="website"
+              name="website"
+              label="Website address"
+              placeholder="example.com"
+              value={values.website}
+              onChange={handleChange}
+              error={errors.website}
+              autoComplete="off"
+              inputMode="url"
+            />
+            <p className="check-page__hint">
+              Paste the link exactly as you received it. There is no need to type
+              &ldquo;https&rdquo; at the start.
+            </p>
 
-          {loadStatus === 'success' && (
-            <FormCard as="form" onSubmit={handleSubmit} noValidate>
-              <FormInput
-                id="platformName"
-                name="platformName"
-                label="Platform Name"
-                placeholder="Enter the investment platform name"
-                value={platformName}
-                onChange={(event) => setPlatformName(event.target.value)}
-                error={fieldErrors.platformName}
-              />
+            <PrimaryButton type="submit" className="check-page__submit">
+              Start the check <ArrowRight size={18} />
+            </PrimaryButton>
+          </FormCard>
 
-              <FormInput
-                id="website"
-                name="website"
-                label="Website URL"
-                type="url"
-                placeholder="https://example.com"
-                value={website}
-                onChange={(event) => setWebsite(event.target.value)}
-                error={fieldErrors.website}
-              />
-
-              <div className="check-page__questions">
-                <h2 className="check-page__questions-title">About the Platform</h2>
-                {questions.map((q) => (
-                  <IndicatorQuestion
-                    key={q.id}
-                    question={q.question}
-                    help={q.help}
-                    value={answers[q.id]}
-                    onChange={(value) => handleAnswerChange(q.id, value)}
-                  />
-                ))}
-              </div>
-
-              {technicalIndicators.length > 0 && (
-                <div className="check-page__auto-checks">
-                  <h3>We'll also automatically check</h3>
-                  <ul>
-                    {technicalIndicators.map((i) => (
-                      <li key={i.id}>{i.label}</li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-
-              <PrimaryButton type="submit" className="check-page__submit">
-                Start Analysis →
-              </PrimaryButton>
-            </FormCard>
-          )}
+          <aside className="check-page__assurance">
+            <ShieldCheck size={18} />
+            <p>
+              No account is needed, and we never ask for your personal or banking details.
+              InvestiCheck looks at the platform, not at you.
+            </p>
+          </aside>
         </div>
       </main>
       <Footer />

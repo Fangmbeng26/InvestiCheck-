@@ -30,7 +30,7 @@ function About() {
           <PageHeader
             eyebrow="About InvestiCheck"
             title="Built to help you think before you invest"
-            subtitle="InvestiCheck exists to make investment scams easier to spot — before money changes hands, not after."
+            subtitle="InvestiCheck exists to make investment scams easier to spot before money changes hands, not after."
             centered
           />
 

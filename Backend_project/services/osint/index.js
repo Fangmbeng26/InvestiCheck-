@@ -184,4 +184,61 @@ export const toStoredShape = (osint) => ({
   },
 });
 
-export default { collectOsint, toStoredShape, clearOsintCache };
+/**
+ * Rebuilds the collector's { status, data } shape from a stored document.
+ *
+ * Persistence flattens the evidence to keep the record compact, which left the
+ * API describing the same field two different ways: one shape when an
+ * assessment was created and another when it was fetched back. Callers had to
+ * know which endpoint the data came from. This restores the single shape so a
+ * stored assessment reads exactly like a fresh one.
+ */
+export const fromStoredShape = (stored) => {
+  if (!stored) return null;
+
+  // A probe that never completed was saved with a non-ok status and no values;
+  // it must come back as unavailable rather than as an object full of nulls,
+  // so that "we could not check" stays distinguishable from "we checked and
+  // found nothing".
+  const wrap = (status, data) => ({
+    status: status ?? "unavailable",
+    data: status === "ok" ? data : null,
+  });
+
+  return {
+    availability: wrap(stored.availability?.status, {
+      reachable: stored.availability?.reachable ?? null,
+      statusCode: stored.availability?.statusCode ?? null,
+      finalUrl: stored.availability?.finalUrl ?? null,
+      redirectCount: stored.availability?.redirectCount ?? null,
+      responseTimeMs: stored.availability?.responseTimeMs ?? null,
+      inconclusive: false,
+    }),
+    domain_registration: wrap(stored.domain?.status, {
+      registrationDate: stored.domain?.registrationDate ?? null,
+      expiryDate: stored.domain?.expiryDate ?? null,
+      registrar: stored.domain?.registrar ?? null,
+      ageDays: stored.domain?.ageDays ?? null,
+      daysUntilExpiry: stored.domain?.daysUntilExpiry ?? null,
+      source: stored.domain?.source ?? "rdap",
+    }),
+    dns: wrap(stored.dns?.status, {
+      resolves: stored.dns?.resolves ?? null,
+      a: stored.dns?.a ?? [],
+      ns: stored.dns?.ns ?? [],
+      mx: (stored.dns?.mx ?? []).map((exchange) => ({ exchange })),
+      hasMx: stored.dns?.hasMx ?? null,
+      nameserverCount: stored.dns?.nameserverCount ?? null,
+    }),
+    tls: wrap(stored.tls?.status, {
+      httpsAvailable: stored.tls?.httpsAvailable ?? null,
+      certValid: stored.tls?.certValid ?? null,
+      issuer: stored.tls?.issuer ?? null,
+      validFrom: stored.tls?.validFrom ?? null,
+      validTo: stored.tls?.validTo ?? null,
+      protocol: stored.tls?.protocol ?? null,
+    }),
+  };
+};
+
+export default { collectOsint, toStoredShape, fromStoredShape, clearOsintCache };
