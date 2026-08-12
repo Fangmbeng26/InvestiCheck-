@@ -1,9 +1,6 @@
 import mongoose from "mongoose";
 import config from "./config/env.js";
 
-// Plan D-09: the previous version logged a connection failure and carried on,
-// so the server would start and then hang on every request that touched the
-// database. Failing fast makes the problem obvious at boot instead.
 
 async function ConnectDB() {
   try {

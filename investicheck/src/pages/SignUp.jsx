@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { EyeOff, UserPlus } from 'lucide-react'
+import { Eye, EyeOff, UserPlus } from 'lucide-react'
 import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
 import PageHeader from '../components/PageHeader.jsx'
@@ -9,14 +9,16 @@ import FormCard from '../components/form/FormCard.jsx'
 import FormInput from '../components/form/FormInput.jsx'
 import FormSelect from '../components/form/FormSelect.jsx'
 import FormCheckbox from '../components/form/FormCheckbox.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 import './AuthPage.css'
-import api from '../Services/api.js'
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const countries = ['Cameroon', 'Nigeria', 'Ghana', 'Kenya', 'Other']
 
 function SignUp() {
   const navigate = useNavigate()
+  const { register } = useAuth()
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -27,7 +29,9 @@ function SignUp() {
     acceptTerms: false,
   })
   const [errors, setErrors] = useState({})
-  const [submitted, setSubmitted] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+  const [submitting, setSubmitting] = useState(false)
+  const [serverError, setServerError] = useState('')
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target
@@ -37,14 +41,8 @@ function SignUp() {
   const validate = () => {
     const nextErrors = {}
 
-    
-    if (!formData.firstName.trim()) {
-      nextErrors.firstName = 'First name is required.'
-    }
-
-    if (!formData.lastName.trim()) {
-      nextErrors.lastName = 'Last name is required.'
-    }
+    if (!formData.firstName.trim()) nextErrors.firstName = 'First name is required.'
+    if (!formData.lastName.trim()) nextErrors.lastName = 'Last name is required.'
 
     if (!formData.email.trim()) {
       nextErrors.email = 'Email address is required.'
@@ -72,15 +70,27 @@ function SignUp() {
     return Object.keys(nextErrors).length === 0
   }
 
-  const [showPassword, setShowPassword] = useState(false)
-
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
-    setSubmitted(false)
+    setServerError('')
 
     if (!validate()) return
 
-    setSubmitted(true)
+    setSubmitting(true)
+    try {
+      // register() sends only the fields the backend actually accepts —
+      // confirmPassword and acceptTerms stay client-side only.
+      await register(formData)
+      // Signup logs the user in immediately (the backend returns a token),
+      // so go straight to the dashboard rather than back to Login.
+      navigate('/dashboard')
+    } catch (error) {
+      setServerError(
+        error.response?.data?.message || 'Something went wrong while creating your account.'
+      )
+    } finally {
+      setSubmitting(false)
+    }
   }
 
   return (
@@ -97,6 +107,7 @@ function SignUp() {
           />
 
           <FormCard as="form" onSubmit={handleSubmit} noValidate>
+            {serverError && <p className="auth-page__error">{serverError}</p>}
 
             <FormInput
               id="firstName"
@@ -128,30 +139,40 @@ function SignUp() {
               error={errors.email}
             />
 
-            <FormInput
-              id="password"
-              name="password"
-              label="Password"
-              type={showPassword ? "text" : "password"}
-              placeholder="At least 8 characters"
-              value={formData.password}
-              onChange={handleChange}
-              error={errors.password}
-            />
-            <button type="button" onClick={() => setShowPassword(!showPassword)}>
-              {showPassword ? <EyeOff size={20} /> : <UserPlus size={20} />} Password
-            </button>
+            <div className="auth-page__password-field">
+              <FormInput
+                id="password"
+                name="password"
+                label="Password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="At least 8 characters"
+                value={formData.password}
+                onChange={handleChange}
+                error={errors.password}
+              />
+              <button
+                type="button"
+                className="auth-page__password-toggle"
+                onClick={() => setShowPassword((prev) => !prev)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                aria-pressed={showPassword}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
 
-            <FormInput
-              id="confirmPassword"
-              name="confirmPassword"
-              label="Confirm Password"
-              type={showPassword ? "text" : "password"}
-              placeholder="Re-enter your password"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              error={errors.confirmPassword}
-            />
+            <div className="auth-page__password-field">
+              <FormInput
+                id="confirmPassword"
+                name="confirmPassword"
+                label="Confirm Password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Re-enter your password"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                error={errors.confirmPassword}
+              />
+            </div>
 
             <FormSelect
               id="country"
@@ -172,8 +193,8 @@ function SignUp() {
               error={errors.acceptTerms}
             />
 
-            <PrimaryButton type="submit" className="auth-page__submit">
-              Create Account →
+            <PrimaryButton type="submit" className="auth-page__submit" disabled={submitting}>
+              {submitting ? 'Creating account…' : 'Create Account →'}
             </PrimaryButton>
 
             <p className="auth-page__switch">

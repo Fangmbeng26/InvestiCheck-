@@ -1,7 +1,6 @@
 import app from "./app.js";
 import config from "./config/env.js";
 
-// config/env.js loads dotenv and validates everything at import time, exiting
 // non-zero if anything required is missing — so by the time we reach here the
 // process is known-good and PORT is already a validated number.
 

@@ -1,66 +1,83 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ShieldCheck } from 'lucide-react'
+import { ShieldCheck, AlertCircle } from 'lucide-react'
 import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
 import PageHeader from '../components/PageHeader.jsx'
 import PrimaryButton from '../components/PrimaryButton.jsx'
+import SecondaryButton from '../components/SecondaryButton.jsx'
 import FormCard from '../components/form/FormCard.jsx'
 import FormInput from '../components/form/FormInput.jsx'
-import FormSelect from '../components/form/FormSelect.jsx'
-import FormTextArea from '../components/form/FormTextArea.jsx'
+import IndicatorQuestion from '../components/IndicatorQuestions.jsx'
+import api from '../Services/api.js'
 import './CheckInvestment.css'
 
-const countries = ['Cameroon', 'Nigeria', 'Ghana', 'Kenya', 'Other']
-const categories = ['Crypto', 'Forex', 'Real Estate', 'Trading', 'Savings', 'Crowdfunding', 'Other']
-const durations = ['7 days', '30 days', '3 months', '6 months', '1 year']
-const yesNo = ['Yes', 'No']
-
-// Only these two fields are marked required in the brief (the rest are
-// extra detail that helps the future scoring engine, but shouldn't block
-// someone from starting an analysis with limited information).
 function CheckInvestment() {
   const navigate = useNavigate()
 
-  const [formData, setFormData] = useState({
-    platformName: '',
-    websiteUrl: '',
-    companyName: '',
-    country: '',
-    category: '',
-    promisedReturn: '',
-    duration: '',
-    minimumInvestment: '',
-    referralRequired: '',
-    guaranteedProfits: '',
-    notes: '',
-  })
 
-  const [errors, setErrors] = useState({})
+  const [platformName, setPlatformName] = useState('')
+  const [website, setWebsite] = useState('')
+  const [fieldErrors, setFieldErrors] = useState({})
 
-  const handleChange = (event) => {
-    const { name, value } = event.target
-    setFormData((prev) => ({ ...prev, [name]: value }))
+
+  const [questions, setQuestions] = useState([])
+  const [technicalIndicators, setTechnicalIndicators] = useState([])
+  const [loadStatus, setLoadStatus] = useState('pending') // pending | success | error
+  const [loadError, setLoadError] = useState('')
+
+  // indicatorId -> 'yes' | 'no' | 'unknown'
+  const [answers, setAnswers] = useState({})
+
+  const loadIndicators = () => {
+    setLoadStatus('pending')
+    api
+      .get('/api/analysis/indicators')
+      .then((response) => {
+        setQuestions(response.data.questions)
+        setTechnicalIndicators(response.data.technicalIndicators || [])
+      
+        const initialAnswers = {}
+        response.data.questions.forEach((q) => {
+          initialAnswers[q.id] = 'unknown'
+        })
+        setAnswers(initialAnswers)
+        setLoadStatus('success')
+      })
+      .catch((error) => {
+        setLoadError(
+          error.response?.data?.message || 'Could not load the assessment questions.'
+        )
+        setLoadStatus('error')
+      })
+  }
+
+  useEffect(() => {
+    loadIndicators()
+  }, [])
+
+  const handleAnswerChange = (id, value) => {
+    setAnswers((prev) => ({ ...prev, [id]: value }))
   }
 
   const validate = () => {
     const nextErrors = {}
 
-    if (!formData.platformName.trim()) {
+    if (!platformName.trim()) {
       nextErrors.platformName = 'Platform name is required.'
     }
 
-    if (!formData.websiteUrl.trim()) {
-      nextErrors.websiteUrl = 'Website URL is required.'
+    if (!website.trim()) {
+      nextErrors.website = 'Website URL is required.'
     } else {
       try {
-        new URL(formData.websiteUrl)
+        new URL(website)
       } catch {
-        nextErrors.websiteUrl = 'Enter a valid URL, including https://'
+        nextErrors.website = 'Enter a valid URL, including https://'
       }
     }
 
-    setErrors(nextErrors)
+    setFieldErrors(nextErrors)
     return Object.keys(nextErrors).length === 0
   }
 
@@ -69,8 +86,8 @@ function CheckInvestment() {
 
     if (!validate()) return
 
-    // No backend yet: the form data travels to the next page via router state
-    navigate('/analysis', { state: formData })
+    // The Analysis.jsx reads this shape and POSTs it to /api/analysis.
+    navigate('/analysis', { state: { platformName, website, answers } })
   }
 
   return (
@@ -82,130 +99,78 @@ function CheckInvestment() {
             icon={ShieldCheck}
             eyebrow="Step 1 of 3"
             title="Check an Investment Platform"
-            subtitle="Enter the details of an investment platform to begin a risk assessment."
+            subtitle="Enter the platform's details, then answer what you know about it. It's fine to leave answers as “Don't know” — that's a real, honest answer here."
           />
 
-          <FormCard as="form" onSubmit={handleSubmit} noValidate>
-            <FormInput
-              id="platformName"
-              name="platformName"
-              label="Platform Name"
-              placeholder="Enter the investment platform name"
-              value={formData.platformName}
-              onChange={handleChange}
-              error={errors.platformName}
-            />
+          {loadStatus === 'error' && (
+            <FormCard className="check-page__load-error">
+              <AlertCircle size={20} />
+              <p>{loadError}</p>
+              <p className="check-page__load-error-hint">
+                Make sure the backend server is running and reachable.
+              </p>
+              <PrimaryButton onClick={loadIndicators}>Try Again</PrimaryButton>
+            </FormCard>
+          )}
 
-            <FormInput
-              id="websiteUrl"
-              name="websiteUrl"
-              label="Website URL"
-              type="url"
-              placeholder="https://example.com"
-              value={formData.websiteUrl}
-              onChange={handleChange}
-              error={errors.websiteUrl}
-            />
+          {loadStatus === 'pending' && (
+            <FormCard>
+              <p className="check-page__loading">Loading assessment questions…</p>
+            </FormCard>
+          )}
 
-            <FormInput
-              id="companyName"
-              name="companyName"
-              label="Company Name"
-              optional
-              placeholder="Enter the registered company name"
-              value={formData.companyName}
-              onChange={handleChange}
-            />
+          {loadStatus === 'success' && (
+            <FormCard as="form" onSubmit={handleSubmit} noValidate>
+              <FormInput
+                id="platformName"
+                name="platformName"
+                label="Platform Name"
+                placeholder="Enter the investment platform name"
+                value={platformName}
+                onChange={(event) => setPlatformName(event.target.value)}
+                error={fieldErrors.platformName}
+              />
 
-            <FormSelect
-              id="country"
-              name="country"
-              label="Country of Operation"
-              optional
-              options={countries}
-              value={formData.country}
-              onChange={handleChange}
-            />
+              <FormInput
+                id="website"
+                name="website"
+                label="Website URL"
+                type="url"
+                placeholder="https://example.com"
+                value={website}
+                onChange={(event) => setWebsite(event.target.value)}
+                error={fieldErrors.website}
+              />
 
-            <FormSelect
-              id="category"
-              name="category"
-              label="Investment Category"
-              optional
-              options={categories}
-              value={formData.category}
-              onChange={handleChange}
-            />
+              <div className="check-page__questions">
+                <h2 className="check-page__questions-title">About the Platform</h2>
+                {questions.map((q) => (
+                  <IndicatorQuestion
+                    key={q.id}
+                    question={q.question}
+                    help={q.help}
+                    value={answers[q.id]}
+                    onChange={(value) => handleAnswerChange(q.id, value)}
+                  />
+                ))}
+              </div>
 
-            <FormInput
-              id="promisedReturn"
-              name="promisedReturn"
-              label="Promised Return (%)"
-              optional
-              type="number"
-              min="0"
-              placeholder="e.g. 25"
-              value={formData.promisedReturn}
-              onChange={handleChange}
-            />
+              {technicalIndicators.length > 0 && (
+                <div className="check-page__auto-checks">
+                  <h3>We'll also automatically check</h3>
+                  <ul>
+                    {technicalIndicators.map((i) => (
+                      <li key={i.id}>{i.label}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
 
-            <FormSelect
-              id="duration"
-              name="duration"
-              label="Investment Duration"
-              optional
-              options={durations}
-              value={formData.duration}
-              onChange={handleChange}
-            />
-
-            <FormInput
-              id="minimumInvestment"
-              name="minimumInvestment"
-              label="Minimum Investment Amount"
-              optional
-              type="number"
-              min="0"
-              placeholder="e.g. 100"
-              value={formData.minimumInvestment}
-              onChange={handleChange}
-            />
-
-            <FormSelect
-              id="referralRequired"
-              name="referralRequired"
-              label="Referral Required?"
-              optional
-              options={yesNo}
-              value={formData.referralRequired}
-              onChange={handleChange}
-            />
-
-            <FormSelect
-              id="guaranteedProfits"
-              name="guaranteedProfits"
-              label="Can Profits Be Guaranteed?"
-              optional
-              options={yesNo}
-              value={formData.guaranteedProfits}
-              onChange={handleChange}
-            />
-
-            <FormTextArea
-              id="notes"
-              name="notes"
-              label="Additional Notes"
-              optional
-              rows={4}
-              placeholder="Anything else worth mentioning about this platform?"
-              value={formData.notes}
-              onChange={handleChange}
-            />
-
-            <PrimaryButton type="submit" className="check-page__submit">
-              Start Analysis →
-            </PrimaryButton>
-          </FormCard>
+              <PrimaryButton type="submit" className="check-page__submit">
+                Start Analysis →
+              </PrimaryButton>
+            </FormCard>
+          )}
         </div>
       </main>
       <Footer />

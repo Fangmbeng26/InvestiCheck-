@@ -4,9 +4,7 @@ import PageHeader from '../components/PageHeader.jsx'
 import PrimaryButton from '../components/PrimaryButton.jsx'
 import './NotFound.css'
 
-// Catches any URL that doesn't match a defined route — including
-// "/forgot-password", which is linked from the Login page but not built
-// yet. Better to land here with a clear message than see a blank screen.
+
 function NotFound() {
   return (
     <>

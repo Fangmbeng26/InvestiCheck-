@@ -27,3 +27,7 @@
   color: var(--text-muted);
   flex-shrink: 0;
 }
+.indicator-list__detail {
+  color: var(--text-muted);
+  font-weight: 400;
+}

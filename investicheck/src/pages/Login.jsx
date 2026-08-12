@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { LogIn } from 'lucide-react'
 import Navbar from '../components/Navbar.jsx'
 import Footer from '../components/Footer.jsx'
@@ -8,13 +8,20 @@ import PrimaryButton from '../components/PrimaryButton.jsx'
 import FormCard from '../components/form/FormCard.jsx'
 import FormInput from '../components/form/FormInput.jsx'
 import FormCheckbox from '../components/form/FormCheckbox.jsx'
+import { useAuth } from '../context/AuthContext.jsx'
 import './AuthPage.css'
 
-// A simple, reusable pattern for checking email shape. Not perfect (no
-// regex catches every invalid email), but good enough for frontend validation.
+
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 
 function Login() {
+  const navigate = useNavigate()
+  const location = useLocation()
+  const { login } = useAuth()
+
+  const redirectPath = location.state?.from || '/dashboard'
+
+
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -22,6 +29,7 @@ function Login() {
   })
   const [errors, setErrors] = useState({})
   const [submitted, setSubmitted] = useState(false)
+  const [serverError, setServerError] = useState('')
 
   const handleChange = (event) => {
     const { name, value, type, checked } = event.target
@@ -45,13 +53,23 @@ function Login() {
     return Object.keys(nextErrors).length === 0
   }
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault()
-    setSubmitted(false)
+    setSubmitted('')
 
     if (!validate()) return
 
     setSubmitted(true)
+    try{
+     const user = await login({ email: formData.email, password: formData.password})
+     const destination = user?.role === 'admin' ? '/admin' : redirectTo
+
+      navigate(destination, { replace: true })
+    } catch (error) {
+      setServerError(error.response?.data?.message || 'An error occurred during login. Please try again.')
+    } finally {
+      setSubmitted(false)
+    }
   }
 
   return (
@@ -68,9 +86,9 @@ function Login() {
           />
 
           <FormCard as="form" onSubmit={handleSubmit} noValidate>
-            {submitted && (
-              <p className="auth-page__success">
-                Login form validated successfully. Backend sign-in isn't connected yet.
+            {serverError && (
+              <p className="auth-page__error">
+                {serverError}
               </p>
             )}
 
@@ -109,7 +127,8 @@ function Login() {
               </Link>
             </div>
 
-            <PrimaryButton type="submit" className="auth-page__submit">
+            <PrimaryButton type="submit" className="auth-page__submit" disabled={submitted}>
+              {submitted ? 'Logging in...' : 'Log in'}
               Login →
             </PrimaryButton>
 

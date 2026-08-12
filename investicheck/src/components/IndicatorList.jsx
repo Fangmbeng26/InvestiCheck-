@@ -19,12 +19,19 @@ function IndicatorList({ items, variant = 'negative' }) {
 
   return (
     <ul className={`indicator-list indicator-list--${variant}`}>
-      {items.map((text) => (
-        <li key={text}>
-          <Icon size={16} />
-          <span>{text}</span>
-        </li>
-      ))}
+      {items.map((item) => {
+        const label = typeof item === 'string' ? item : item.label
+        const detail = typeof item === 'string' ? null : item.detail
+        return (
+          <li key={label}>
+            <Icon size={16} />
+            <span>
+              {label}
+              {detail && <span className="indicator-list__detail"> {detail}</span>}
+            </span>
+          </li>
+        )
+      })}
     </ul>
   )
 }

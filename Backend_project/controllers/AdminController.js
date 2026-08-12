@@ -3,12 +3,7 @@ import Report from "../models/reportSchema.js";
 import Watchlist from "../models/watchlistSchema.js";
 import { AppError, asyncHandler } from "../middleware/errorHandler.js";
 
-// FR-18. The SRS names seven metrics the dashboard may display:
-//   total analysed platforms, high/medium/low counts, number of submitted
-//   reports, frequently reported platforms, most common risk indicators.
-// All seven are produced here from real data via aggregation.
-
-/** GET /api/admin/stats */
+//GET /api/admin/stats
 export const getStats = asyncHandler(async (req, res) => {
   const [byLevel, totalAnalyses, reportCounts, frequentlyReported, commonIndicators, recent] =
     await Promise.all([
@@ -18,7 +13,7 @@ export const getStats = asyncHandler(async (req, res) => {
 
       Report.aggregate([{ $group: { _id: "$status", count: { $sum: 1 } } }]),
 
-      // "Frequently reported platforms" counts reviewed reports only —
+      // counts reviewed reports only —
       // pending ones have not been checked and could be malicious.
       Report.aggregate([
         { $match: { status: "reviewed" } },
@@ -90,7 +85,7 @@ export const getStats = asyncHandler(async (req, res) => {
   });
 });
 
-/** GET /api/admin/reports — the moderation queue. */
+// GET /api/admin/reports — the moderation queue.
 export const listReports = asyncHandler(async (req, res) => {
   const { page, limit, status } = req.validatedQuery;
   const filter = status ? { status } : {};
@@ -107,7 +102,7 @@ export const listReports = asyncHandler(async (req, res) => {
   res.json({ items, page, limit, total, pages: Math.ceil(total / limit) });
 });
 
-/** PATCH /api/admin/reports/:id — approve or reject a submission. */
+// PATCH /api/admin/reports/:id — approve or reject a submission. 
 export const moderateReport = asyncHandler(async (req, res) => {
   const { status, moderatorNote } = req.body;
 

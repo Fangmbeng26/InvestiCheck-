@@ -1,0 +1,220 @@
+.admin-page {
+  padding: 56px 0 96px;
+}
+
+.admin-page__header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.admin-page__error {
+  background-color: #fef2f2;
+  color: var(--red);
+  font-size: 13.5px;
+  font-weight: 600;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+}
+
+.admin-empty {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* ---------- Stat cards ---------- */
+.admin-stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.admin-stat {
+  background-color: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px;
+  text-align: center;
+}
+
+.admin-stat--high { border-color: #fecaca; }
+.admin-stat--medium { border-color: #fde68a; }
+
+.admin-stat__value {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--navy);
+}
+
+.admin-stat--high .admin-stat__value { color: var(--red); }
+.admin-stat--medium .admin-stat__value { color: var(--orange); }
+
+.admin-stat__label {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.admin-section {
+  margin-bottom: 24px;
+}
+
+/* ---------- Simple list (frequently reported / watchlist) ---------- */
+.admin-simple-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.admin-simple-list li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 14px;
+  color: var(--navy);
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.admin-simple-list li:last-child {
+  border-bottom: none;
+}
+
+.admin-simple-list__meta {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.admin-watchlist__delete {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  padding: 6px;
+  border-radius: var(--radius-sm);
+}
+
+.admin-watchlist__delete:hover {
+  color: var(--red);
+  background-color: #fef2f2;
+}
+
+/* ---------- Report moderation queue ---------- */
+.admin-report-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.admin-report {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px 18px;
+}
+
+.admin-report__platform {
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 4px;
+}
+
+.admin-report__meta {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  text-transform: capitalize;
+  margin-bottom: 8px;
+}
+
+.admin-report__description {
+  font-size: 13.5px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.admin-report__actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.admin-report__approve,
+.admin-report__reject {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background-color: var(--white);
+}
+
+.admin-report__approve {
+  color: var(--green);
+}
+.admin-report__approve:hover {
+  background-color: #dcfce7;
+  border-color: #86efac;
+}
+
+.admin-report__reject {
+  color: var(--red);
+}
+.admin-report__reject:hover {
+  background-color: #fef2f2;
+  border-color: #fecaca;
+}
+
+/* ---------- Watchlist add form ---------- */
+.admin-watchlist-form {
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.admin-watchlist-form h3 {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--navy);
+  margin-bottom: 14px;
+}
+
+.admin-watchlist-form__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.admin-watchlist-form__submit {
+  font-size: 14px;
+}
+
+@media (max-width: 940px) {
+  .admin-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .admin-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .admin-watchlist-form__row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-report {
+    flex-direction: column;
+  }
+}

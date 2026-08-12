@@ -10,14 +10,7 @@ import { ALL_INDICATORS, BEHAVIOURAL_INDICATORS, RISK_BANDS } from "../services/
 import { normalizeUrl, normalizeDomain } from "../services/urlGuard.js";
 import { AppError, asyncHandler } from "../middleware/errorHandler.js";
 
-// FR-02 … FR-14. This is the endpoint the whole system exists to serve.
 
-/**
- * GET /api/analysis/indicators
- * The questions the client should ask, with their weights and explanations.
- * Served from the engine's definitions so the frontend never keeps its own
- * copy — that duplication is what let the old simulation drift from the SRS.
- */
 export const getIndicators = asyncHandler(async (req, res) => {
   res.json({
     questions: BEHAVIOURAL_INDICATORS.map((indicator) => ({
@@ -40,12 +33,8 @@ export const getIndicators = asyncHandler(async (req, res) => {
   });
 });
 
-/**
- * POST /api/analysis/osint
- * FR-04 … FR-07 only. Lets the UI show the technical findings (which take a
- * couple of seconds) while the user works through the questions, instead of
- * making them wait behind a blank progress bar.
- */
+
+ // Lets the UI show the technical findings  while the user works through the questions.
 export const runOsintOnly = asyncHandler(async (req, res) => {
   const { website } = req.body;
 
@@ -57,14 +46,12 @@ export const runOsintOnly = asyncHandler(async (req, res) => {
   res.json({ osint: osint.data });
 });
 
-/**
- * POST /api/analysis
- * The full assessment: OSINT + user answers -> score, level, explanation.
- */
+// The full assessment: OSINT + user answers -> score, level, explanation.
+ 
 export const createAnalysis = asyncHandler(async (req, res) => {
   const { platformName, website, answers, model } = req.body;
 
-  // FR-03: validate the URL before anything else touches it.
+  //  validate the URL before anything else touches it.
   const parsed = normalizeUrl(website);
   if (!parsed.ok) {
     throw new AppError(400, parsed.message);
@@ -73,12 +60,10 @@ export const createAnalysis = asyncHandler(async (req, res) => {
   const modelVersion = model ?? config.DEFAULT_RISK_MODEL;
   const normalizedDomain = parsed.normalizedDomain;
 
-  // NFR 11.4: an OSINT failure must not block the assessment. Only an SSRF or
-  // input refusal is fatal, and normalizeUrl above has already caught those.
+  //an OSINT failure must not block the assessment.
   const osintResult = await collectOsint(parsed.url.toString());
   const osint = osintResult.ok ? osintResult.data : null;
 
-  // Override inputs (plan section 9.5), gathered in parallel.
   const [watchlistMatch, corroboratingReports] = await Promise.all([
     Watchlist.findMatch(normalizedDomain, platformName).catch(() => null),
     Report.countDocuments({
@@ -134,18 +119,14 @@ export const createAnalysis = asyncHandler(async (req, res) => {
   });
 });
 
-/**
- * GET /api/analysis/:id
- * Retrieves a stored assessment so a result can be revisited or shared.
- */
+
 export const getAnalysis = asyncHandler(async (req, res) => {
   const analysis = await Analysis.findById(req.params.id).lean();
   if (!analysis) {
     throw new AppError(404, "Analysis not found");
   }
 
-  // Rebuild the explanation rather than storing prose, so wording changes
-  // apply retrospectively to stored results.
+
   const explanation = explain(
     {
       riskLevel: analysis.riskLevel,
@@ -161,7 +142,7 @@ export const getAnalysis = asyncHandler(async (req, res) => {
   res.json({ ...analysis, id: analysis._id, explanation });
 });
 
-/** Hashes a submitter IP for abuse control without retaining the address. */
+
 export const hashIp = (ip) =>
   crypto.createHash("sha256").update(String(ip ?? "") + config.JWT_SECRET).digest("hex").slice(0, 32);
 

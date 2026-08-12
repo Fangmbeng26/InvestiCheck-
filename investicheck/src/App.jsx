@@ -10,6 +10,8 @@ import RiskResult from './pages/RiskResult.jsx'
 import Report from './pages/Report.jsx'
 import Dashboard from './pages/Dashboard.jsx'
 import NotFound from './pages/NotFound.jsx'
+import ForgotPassword from './pages/ForgotPassword.jsx'
+import ProtectedRoute from './components/ProtectedRoute.jsx'
 
 function App() {
   return (
@@ -25,7 +27,10 @@ function App() {
       <Route path="/analysis" element={<Analysis />} />
       <Route path="/risk-result" element={<RiskResult />} />
       <Route path="/report" element={<Report />} />
-      <Route path="/dashboard" element={<Dashboard />} />
+      <Route path="/dashboard" element={<ProtectedRoute>
+        <Dashboard />
+      </ProtectedRoute>} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="*" element={<NotFound />} />
     </Routes>
   )

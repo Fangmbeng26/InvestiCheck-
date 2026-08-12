@@ -1,12 +1,9 @@
 import config from "../../config/env.js";
 import { safeFetch } from "../urlGuard.js";
 
-// FR-04: "The system shall check whether the submitted website is reachable"
-// and display Website Status: Online / Unavailable.
-//
 // Every request goes through safeFetch, so the SSRF controls apply to the
 // initial URL and to each redirect hop.
-//
+
 // Interpretation caution, carried into the result as `inconclusive`: a
 // non-2xx response is weakly diagnostic. Legitimate sites go down, hosting
 // providers block unfamiliar server IPs, and CAPTCHA walls return 403. Only a

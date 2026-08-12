@@ -48,7 +48,6 @@
   color: var(--navy);
 }
 
-/* ---------- FAQ ---------- */
 .contact-faq__list {
   display: flex;
   flex-direction: column;

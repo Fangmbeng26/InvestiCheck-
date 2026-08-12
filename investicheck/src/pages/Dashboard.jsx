@@ -7,6 +7,8 @@ import PrimaryButton from '../components/PrimaryButton.jsx'
 import SecondaryButton from '../components/SecondaryButton.jsx'
 import FormCard from '../components/form/FormCard.jsx'
 import './Dashboard.css'
+import { useAuth } from '../context/AuthContext.jsx'
+import { useNavigate } from 'react-router-dom'
 
 const stats = [
   { icon: ShieldCheck, label: 'Platforms Analyzed', value: '12' },
@@ -21,10 +23,17 @@ const recentAnalyses = [
 ]
 
 const savedReports = ['ABC Investment — Full Report', 'Northgate Capital — Full Report']
-
 const favoritePlatforms = ['Sunrise Trading Co.', 'Coastal Yield Partners']
 
 function Dashboard() {
+  const {user, logout} = useAuth()
+  const navigate = useNavigate
+
+  const handleLogout = () => {
+    logout()
+    navigate('/')
+  }
+
   return (
     <>
       <Navbar />
@@ -32,8 +41,8 @@ function Dashboard() {
         <div className="container">
           <PageHeader
             eyebrow="Your Dashboard"
-            title="Welcome back"
-            subtitle="This is placeholder data — real accounts and saved history will appear here once sign-in is connected."
+            title={user?.firstname ? `Welcome back, ${user.firstname}` : 'Welcome back'}
+            subtitle="The lists below are  placeholder data — real accounts and saved history will appear here once sign-in is connected."
           />
 
           <div className="dashboard-stats">
@@ -94,11 +103,11 @@ function Dashboard() {
               <PrimaryButton to="/check-investment">
                 <Search size={16} /> Analyze New Platform
               </PrimaryButton>
-              <SecondaryButton to="/report">
+              <SecondaryButton to="/dashboard#saved-report">
                 <FolderOpen size={16} /> View Reports
               </SecondaryButton>
-              <SecondaryButton to="/register">
-                <Settings size={16} /> Account Settings
+              <SecondaryButton onClick={handleLogout}>
+                <Settings size={16} /> Log Out
               </SecondaryButton>
             </div>
           </section>

@@ -28,7 +28,6 @@ const overrideSchema = new mongoose.Schema(
 
 // SRS section 16.1 (Analysis Collection), extended with the fields the v2
 // model needs: coverage, modelVersion and the override channel.
-//
 // `normalizedDomain` is indexed because every admin aggregation (FR-18) and
 // the report-corroboration rule join on it.
 
@@ -45,7 +44,7 @@ const analysisSchema = new mongoose.Schema(
         finalUrl: String,
         redirectCount: Number,
         responseTimeMs: Number,
-        status: String, // ok | not_found | timeout | unavailable
+        status: String, 
       },
       domain: {
         registrationDate: Date,
